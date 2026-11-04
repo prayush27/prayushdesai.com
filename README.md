@@ -25,7 +25,7 @@ The full version — projects, write-ups and a résumé — is in progress. For 
 ## Stack
 
 - **Markup & styles:** plain HTML and CSS, nothing to build
-- **Game:** *Mind your punctuation*, a tiny endless runner. You're an italic “p” writing a line of text, jumping over punctuation marks and running under flying dashes. Drawn on a `<canvas>` in vanilla JavaScript.
+- **Game:** *Paper plane*, a tiny one-button flyer. Hold to climb, let go to glide, and steer around birds and red balloons. Drawn on a `<canvas>` in vanilla JavaScript.
 - **Type:** [Instrument Serif](https://fonts.google.com/specimen/Instrument+Serif) and [Inter Tight](https://fonts.google.com/specimen/Inter+Tight)
 - **Palette:** one warm paper tone, near-black ink, and UW red for hover states
 - **Hosting:** GitHub Pages
