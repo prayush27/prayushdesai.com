@@ -9,29 +9,24 @@
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter+Tight:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap" rel="stylesheet">
 <style>
-  :root { --bg: #f4f1ea; --ink: #1a1917; --soft: #77736b; --red: #c5050c; --pad: clamp(20px, 5vw, 64px); }
+  :root { --bg: #f4f1ea; --ink: #1a1917; --soft: #77736b; --rule: #dcd7cc; }
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    background: var(--bg); color: var(--ink); font: 400 16px/1.55 "Inter Tight", system-ui, sans-serif;
-    -webkit-font-smoothing: antialiased; min-height: 100svh; display: flex; flex-direction: column; padding: 28px var(--pad);
-  }
-  a { color: inherit; text-decoration: none; }
-  header { display: flex; justify-content: space-between; font-size: 14px; color: var(--soft); }
-  main { flex: 1; display: flex; flex-direction: column; justify-content: center; }
-  h1 { font: 400 clamp(96px, 20vw, 300px)/.9 "Instrument Serif", serif; letter-spacing: -.03em; margin-left: -.04em; }
-  h1 em { color: var(--red); }
-  p { margin-top: 28px; font-size: clamp(19px, 1.8vw, 24px); }
-  p a { border-bottom: 1px solid currentColor; }
-  p a:hover { color: var(--red); }
+  body { background: var(--bg); color: var(--ink); font: 400 15px/1.65 "Inter", system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+  main { max-width: 600px; margin: 0 auto; padding: clamp(64px, 14vh, 140px) 20px; }
+  h1 { font-size: 15px; font-weight: 500; }
+  p { color: var(--soft); }
+  p + p { margin-top: 32px; color: var(--ink); }
+  a { color: inherit; text-decoration: underline; text-underline-offset: 3px; text-decoration-color: var(--rule); }
+  a:hover { text-decoration-color: currentColor; }
 </style>
 </head>
 <body>
-  <header><a href="/">Prayush Desai</a><span>404</span></header>
-  <main>
-    <h1>4<em>0</em>4</h1>
-    <p>Nothing here yet. <a href="/">Go home</a>.</p>
-  </main>
+<main>
+  <h1>404</h1>
+  <p>This page doesn’t exist.</p>
+  <p><a href="/">Back to the homepage</a></p>
+</main>
 </body>
 </html>

@@ -4,7 +4,7 @@
   </a>
   <h1>prayushdesai.com</h1>
   <p>
-    Source for my personal site. A single page of hand-written HTML and CSS,<br>
+    Source for my personal website. A single page of hand-written HTML and CSS,<br>
     hosted on <a href="https://pages.github.com">GitHub Pages</a>.
   </p>
   <p>
@@ -26,7 +26,7 @@ The full version — projects, write-ups and a résumé — is in progress. For 
 
 - **Markup & styles:** plain HTML and CSS, nothing to build
 - **Game:** *Paper plane*, a tiny one-button flyer. Hold to climb, let go to glide, and steer around birds and red balloons. Drawn on a `<canvas>` in vanilla JavaScript.
-- **Type:** [Instrument Serif](https://fonts.google.com/specimen/Instrument+Serif) and [Inter Tight](https://fonts.google.com/specimen/Inter+Tight)
+- **Type:** [Inter](https://rsms.me/inter/), one typeface for everything
 - **Palette:** one warm paper tone, near-black ink, and UW red for hover states
 - **Hosting:** GitHub Pages
 - **Domain & DNS:** Cloudflare

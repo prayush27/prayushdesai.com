@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Prayush Desai</title>
-<meta name="description" content="Prayush Desai studies computer science at UW–Madison and is building MadPlan, a class planner for UW students. New site in progress.">
+<meta name="description" content="Prayush Desai studies computer science at UW–Madison and is building MadPlan, a class planner for UW students.">
 <meta name="theme-color" content="#f4f1ea">
 <meta name="color-scheme" content="light">
 <link rel="canonical" href="https://prayushdesai.com/">
@@ -12,12 +12,12 @@
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://prayushdesai.com/">
 <meta property="og:title" content="Prayush Desai">
-<meta property="og:description" content="Computer science at UW–Madison. New site in progress.">
+<meta property="og:description" content="Computer science student at UW–Madison.">
 <meta property="og:image" content="https://prayushdesai.com/assets/og.png">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter+Tight:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root {
     --bg: #f4f1ea;
@@ -25,107 +25,100 @@
     --soft: #77736b;
     --rule: #dcd7cc;
     --red: #c5050c;
-    --pad: clamp(20px, 5vw, 64px);
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html { -webkit-text-size-adjust: 100%; }
   body {
     background: var(--bg); color: var(--ink);
-    font: 400 16px/1.55 "Inter Tight", system-ui, sans-serif;
+    font: 400 15px/1.65 "Inter", system-ui, sans-serif;
+    font-feature-settings: "cv11", "ss01";
     -webkit-font-smoothing: antialiased;
-    min-height: 100svh; display: flex; flex-direction: column;
-    padding: 28px var(--pad);
   }
-  a { color: inherit; text-decoration: none; }
   ::selection { background: var(--ink); color: var(--bg); }
 
-  header, footer { display: flex; justify-content: space-between; gap: 16px; font-size: 14px; color: var(--soft); }
+  main { max-width: 600px; margin: 0 auto; padding: clamp(64px, 14vh, 140px) 20px 96px; }
 
-  main { flex: 1; display: flex; flex-direction: column; justify-content: center; padding: 12vh 0; max-width: 1100px; }
-
-  h1 {
-    font: 400 clamp(56px, 11vw, 176px)/.92 "Instrument Serif", serif;
-    letter-spacing: -.03em; margin-left: -.04em;
-    opacity: 0; transform: translateY(12px); animation: in 1s cubic-bezier(.2,.7,0,1) forwards;
+  a {
+    color: inherit; text-decoration: underline; text-underline-offset: 3px;
+    text-decoration-thickness: 1px; text-decoration-color: var(--rule);
+    transition: text-decoration-color .2s, color .2s;
   }
-  h1 em { font-style: italic; }
+  a:hover, a:focus-visible { text-decoration-color: currentColor; outline: none; }
 
-  .split {
-    display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 380px); gap: 48px 64px; align-items: start;
-    margin-top: 36px;
-  }
+  h1 { font-size: 15px; font-weight: 500; letter-spacing: -.005em; }
+  .role { color: var(--soft); }
 
-  p {
-    max-width: 34ch;
-    font-size: clamp(19px, 1.8vw, 24px); line-height: 1.4; letter-spacing: -.01em;
-    opacity: 0; animation: in 1s .25s cubic-bezier(.2,.7,0,1) forwards;
-  }
-  p span { color: var(--soft); }
-  p b { font-weight: 500; }
+  section { margin-top: 48px; }
+  h2 { font-size: 15px; font-weight: 400; color: var(--soft); margin-bottom: 14px; }
+  .intro { margin-top: 32px; }
+  .intro p + p { margin-top: 14px; }
+  .soft { color: var(--soft); }
 
-  nav {
-    display: flex; flex-wrap: wrap; gap: 8px 28px; margin-top: 36px;
-    opacity: 0; animation: in 1s .4s cubic-bezier(.2,.7,0,1) forwards;
-  }
-  nav a {
-    font-size: 17px; padding-bottom: 2px;
-    background: linear-gradient(currentColor, currentColor) 0 100% / 100% 1px no-repeat;
-    transition: color .25s, background-size .4s cubic-bezier(.2,.7,0,1);
-  }
-  nav a:hover, nav a:focus-visible { color: var(--red); background-size: 0 1px; background-position: 100% 100%; outline: none; }
+  ul { list-style: none; display: grid; gap: 14px; }
+  li .t { font-weight: 500; }
+  li .d { display: block; color: var(--soft); }
 
-  .game { opacity: 0; animation: in 1s .55s cubic-bezier(.2,.7,0,1) forwards; }
+  footer { margin-top: 72px; display: flex; justify-content: space-between; gap: 16px; font-size: 13px; color: var(--soft); }
+
+  /* gentle stagger as the page loads */
+  .rise { opacity: 0; transform: translateY(6px); animation: in .7s cubic-bezier(.2,.7,0,1) forwards; }
+  .rise:nth-child(2) { animation-delay: .06s; } .rise:nth-child(3) { animation-delay: .12s; }
+  .rise:nth-child(4) { animation-delay: .18s; } .rise:nth-child(5) { animation-delay: .24s; }
+  .rise:nth-child(6) { animation-delay: .30s; } .rise:nth-child(7) { animation-delay: .36s; }
+  @keyframes in { to { opacity: 1; transform: none; } }
+
   .game-head, .game-foot { display: flex; justify-content: space-between; gap: 12px; font-size: 13px; color: var(--soft); }
   .game-head { margin-bottom: 10px; }
   .game-head b { font-weight: 500; color: var(--ink); font-variant-numeric: tabular-nums; }
   .game-foot { margin-top: 10px; }
   .game canvas {
-    display: block; width: 100%; aspect-ratio: 6 / 5; border: 1px solid var(--rule); border-radius: 4px;
+    display: block; width: 100%; aspect-ratio: 16 / 9; border: 1px solid var(--rule); border-radius: 6px;
     cursor: pointer; touch-action: none; -webkit-tap-highlight-color: transparent; user-select: none; -webkit-user-select: none;
   }
   .game canvas:focus-visible { outline: 1px solid var(--ink); outline-offset: 3px; }
+  @media (max-width: 520px) { .game canvas { aspect-ratio: 4 / 3; } }
 
-  @keyframes in { to { opacity: 1; transform: none; } }
-  @media (prefers-reduced-motion: reduce) {
-    h1, p, nav, .game { animation: none; opacity: 1; transform: none; }
-  }
-  @media (max-width: 800px) {
-    .split { grid-template-columns: minmax(0, 1fr); }
-    .game { max-width: 420px; }
-  }
+  @media (prefers-reduced-motion: reduce) { .rise { animation: none; opacity: 1; transform: none; } }
 </style>
 </head>
 <body>
 
-<header>
-  <span>Prayush Desai</span>
-  <span>New site in progress</span>
-</header>
-
 <main>
-  <h1>Prayush <em>Desai</em></h1>
-  <div class="split">
-    <div>
-      <p>I study computer science at UW–Madison and write software in Python and Java. Right now I’m building <b>MadPlan</b>, a class planner that turns your DARS into a semester schedule. <span>The full site is on its way. In the meantime, here’s where to find me.</span></p>
-      <nav>
-        <a href="mailto:pdesai25@wisc.edu">Email</a>
-        <a href="https://github.com/prayush27" target="_blank" rel="noopener">GitHub</a>
-        <a href="https://linkedin.com/in/prayushdesai" target="_blank" rel="noopener">LinkedIn</a>
-      </nav>
-    </div>
+  <header class="rise">
+    <h1>Prayush Desai</h1>
+    <div class="role">Computer science student</div>
+  </header>
 
-    <section class="game" aria-label="Paper plane, a small game">
-      <div class="game-head"><span>Paper plane</span><span><b id="score">0</b> m · best <b id="best">0</b></span></div>
-      <canvas id="sky" tabindex="0" aria-label="Game area. Hold space or press and hold to climb, let go to glide."></canvas>
-      <div class="game-foot"><span>Hold to climb, let go to glide</span><span id="msg">Mind the birds</span></div>
-    </section>
+  <div class="intro rise">
+    <p>I study computer science at UW–Madison and like building small, useful software, mostly in Python and Java.</p>
+    <p class="soft">This site is still coming together. More soon.</p>
   </div>
-</main>
 
-<footer>
-  <span>© 2026</span>
-  <span>Madison, WI</span>
-</footer>
+  <section class="rise">
+    <h2>Now</h2>
+    <ul>
+      <li><span class="t">MadPlan</span><span class="d">A class planner that reads your DARS and builds a semester schedule around it.</span></li>
+      <li><span class="t">UW–Madison</span><span class="d">B.S. Computer Science, class of 2029.</span></li>
+    </ul>
+  </section>
+
+  <section class="rise game" aria-label="Paper plane, a small game">
+    <h2>Play</h2>
+    <div class="game-head"><span>Paper plane</span><span><b id="score">0</b> m · best <b id="best">0</b></span></div>
+    <canvas id="sky" tabindex="0" aria-label="Game area. Hold space or press and hold to climb, let go to glide."></canvas>
+    <div class="game-foot"><span>Hold to climb, let go to glide</span><span id="msg">Mind the birds</span></div>
+  </section>
+
+  <section class="rise">
+    <h2>Connect</h2>
+    <p>Reach me by <a href="mailto:pdesai25@wisc.edu">email</a>, or find me on <a href="https://github.com/prayush27" target="_blank" rel="noopener">GitHub</a> and <a href="https://linkedin.com/in/prayushdesai" target="_blank" rel="noopener">LinkedIn</a>.</p>
+  </section>
+
+  <footer class="rise">
+    <span>© 2026</span>
+    <span>Madison, WI</span>
+  </footer>
+</main>
 
 <script>
 (() => {
@@ -332,9 +325,9 @@
     if (state === "idle" || (state === "over" && crashT > 0.6)) {
       ctx.fillStyle = "rgba(244,241,234,.8)"; ctx.fillRect(0, 0, W, H);
       ctx.textAlign = "center"; ctx.fillStyle = INK;
-      ctx.font = "italic 400 " + 36 * u + 'px "Instrument Serif", Georgia, serif';
-      ctx.fillText(state === "idle" ? "Ready for takeoff?" : Math.floor(dist) + " m", W / 2, H / 2 - 4 * u);
-      ctx.fillStyle = SOFT; ctx.font = "400 " + Math.max(12, 13 * u) + 'px "Inter Tight", system-ui, sans-serif';
+      ctx.font = "500 " + 22 * u + 'px "Inter", system-ui, sans-serif';
+      ctx.fillText(state === "idle" ? "Ready for takeoff?" : Math.floor(dist) + " m", W / 2, H / 2 - 6 * u);
+      ctx.fillStyle = SOFT; ctx.font = "400 " + Math.max(12, 13 * u) + 'px "Inter", system-ui, sans-serif';
       ctx.fillText(state === "idle" ? "Press and hold to fly" : "Tap to fly again", W / 2, H / 2 + 22 * u);
     }
   }
