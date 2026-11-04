@@ -24,7 +24,8 @@ The full version — projects, write-ups and a résumé — is in progress. For 
 
 ## Stack
 
-- **Markup & styles:** plain HTML and CSS, no JavaScript, nothing to build
+- **Markup & styles:** plain HTML and CSS, nothing to build
+- **Game:** a small stacking game drawn on a `<canvas>` in vanilla JavaScript
 - **Type:** [Instrument Serif](https://fonts.google.com/specimen/Instrument+Serif) and [Inter Tight](https://fonts.google.com/specimen/Inter+Tight)
 - **Palette:** one warm paper tone, near-black ink, and UW red for hover states
 - **Hosting:** GitHub Pages
@@ -34,7 +35,7 @@ The full version — projects, write-ups and a résumé — is in progress. For 
 
 ```
 .
-├── index.html      # the whole homepage: markup and styles
+├── index.html      # the whole homepage: markup, styles and the game
 ├── 404.html        # served by GitHub Pages for unknown paths
 ├── favicon.svg
 ├── assets/         # social preview image and README screenshot
