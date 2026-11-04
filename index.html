@@ -51,7 +51,7 @@
   h1 em { font-style: italic; }
 
   p {
-    margin-top: 36px; max-width: 34ch;
+    max-width: 34ch;
     font-size: clamp(19px, 1.8vw, 24px); line-height: 1.4; letter-spacing: -.01em;
     opacity: 0; animation: in 1s .25s cubic-bezier(.2,.7,0,1) forwards;
   }
@@ -69,9 +69,31 @@
   }
   nav a:hover, nav a:focus-visible { color: var(--red); background-size: 0 1px; background-position: 100% 100%; outline: none; }
 
+  .split {
+    display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 340px); gap: 48px 64px; align-items: start;
+    margin-top: 36px;
+  }
+
+  .game {
+    opacity: 0; animation: in 1s .55s cubic-bezier(.2,.7,0,1) forwards;
+  }
+  .game-head, .game-foot { display: flex; justify-content: space-between; gap: 12px; font-size: 13px; color: var(--soft); }
+  .game-head { margin-bottom: 10px; }
+  .game-head b { font-weight: 500; color: var(--ink); font-variant-numeric: tabular-nums; }
+  .game-foot { margin-top: 10px; }
+  .game canvas {
+    display: block; width: 100%; aspect-ratio: 1 / 1; border: 1px solid var(--rule); border-radius: 4px;
+    cursor: pointer; touch-action: manipulation; -webkit-tap-highlight-color: transparent;
+  }
+  .game canvas:focus-visible { outline: 1px solid var(--ink); outline-offset: 3px; }
+
   @keyframes in { to { opacity: 1; transform: none; } }
   @media (prefers-reduced-motion: reduce) {
-    h1, p, nav { animation: none; opacity: 1; transform: none; }
+    h1, p, nav, .game { animation: none; opacity: 1; transform: none; }
+  }
+  @media (max-width: 760px) {
+    .split { grid-template-columns: minmax(0, 1fr); }
+    .game { max-width: 360px; }
   }
 </style>
 </head>
@@ -84,12 +106,22 @@
 
 <main>
   <h1>Prayush <em>Desai</em></h1>
+  <div class="split">
+  <div>
   <p>I study computer science at UW–Madison and write software in Python and Java. Right now I’m building <b>MadPlan</b>, a class planner that turns your DARS into a semester schedule. <span>The full site is on its way. In the meantime, here’s where to find me.</span></p>
   <nav>
     <a href="mailto:pdesai25@wisc.edu">Email</a>
     <a href="https://github.com/prayush27" target="_blank" rel="noopener">GitHub</a>
     <a href="https://linkedin.com/in/prayushdesai" target="_blank" rel="noopener">LinkedIn</a>
   </nav>
+  </div>
+
+  <section class="game" aria-label="Stack your semester, a small game">
+    <div class="game-head"><span>Stack your semester</span><span><b id="score">0</b> credits · best <b id="best">0</b></span></div>
+    <canvas id="stack" tabindex="0" aria-label="Game area. Press space or tap to drop each class."></canvas>
+    <div class="game-foot"><span>Tap or press space to drop</span><span id="msg">Line them up</span></div>
+  </section>
+  </div>
 </main>
 
 <footer>
@@ -97,5 +129,174 @@
   <span>Madison, WI</span>
 </footer>
 
+<script>
+(() => {
+  const canvas = document.getElementById("stack");
+  const ctx = canvas.getContext("2d");
+  const scoreEl = document.getElementById("score");
+  const bestEl = document.getElementById("best");
+  const msgEl = document.getElementById("msg");
+
+  const INK = "#1a1917", PAPER = "#f4f1ea", SOFT = "#77736b", RED = "#c5050c", RULE = "#dcd7cc";
+  const COURSES = ["CS 200", "MATH 221", "CS 300", "MATH 222", "CS 252", "STAT 240", "CS 354", "MATH 240",
+                   "CS 400", "ECE 252", "CS 540", "MATH 340", "CS 577", "STAT 340", "CS 564", "CS 537"];
+  const H = 26;          // block height, css px
+  const CREDITS = 3;     // per class
+
+  let W = 0, CH = 0, dpr = 1;
+  let stack, cur, falling, state, camera, speed, perfects, flash;
+
+  let best = 0;
+  try { best = Number(localStorage.getItem("stack-best")) || 0; } catch (e) {}
+  bestEl.textContent = best;
+
+  function resize() {
+    const r = canvas.getBoundingClientRect();
+    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    W = r.width; CH = r.height; lastW = W;
+    canvas.width = Math.round(W * dpr); canvas.height = Math.round(CH * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    if (!stack) reset();
+    draw();
+  }
+
+  function reset() {
+    const w = W * 0.62;
+    stack = [{ x: (W - w) / 2, w, label: "" }];
+    falling = []; camera = 0; speed = W * 0.6; perfects = 0; flash = 0;
+    state = "idle";
+    spawn();
+    setScore(0);
+    msgEl.textContent = "Line them up";
+  }
+
+  function spawn() {
+    const top = stack[stack.length - 1];
+    const fromLeft = stack.length % 2 === 0;
+    cur = { x: fromLeft ? -top.w * 0.15 : W - top.w * 0.85, w: top.w, dir: fromLeft ? 1 : -1,
+            label: COURSES[(stack.length - 1) % COURSES.length] };
+  }
+
+  function setScore(n) {
+    scoreEl.textContent = n * CREDITS;
+    if (n * CREDITS > best) {
+      best = n * CREDITS; bestEl.textContent = best;
+      try { localStorage.setItem("stack-best", best); } catch (e) {}
+    }
+  }
+
+  function drop() {
+    if (state === "idle") { state = "play"; return; }
+    if (state === "over") { reset(); state = "play"; return; }
+
+    const top = stack[stack.length - 1];
+    let left = Math.max(cur.x, top.x), right = Math.min(cur.x + cur.w, top.x + top.w);
+
+    if (right <= left) {
+      falling.push({ ...cur, y: stack.length * H, vy: 0 });
+      state = "over";
+      const credits = (stack.length - 1) * CREDITS;
+      msgEl.textContent = credits >= 18 ? "Overloaded. Nice." : credits ? "Dropped a class" : "Missed it";
+      return;
+    }
+
+    if (Math.abs(cur.x - top.x) < 4) {
+      left = top.x; right = top.x + top.w; perfects++; flash = 1;
+      msgEl.textContent = perfects > 1 ? perfects + " perfect in a row" : "Perfect";
+    } else {
+      perfects = 0;
+      const cutX = cur.x < top.x ? cur.x : right;
+      const cutW = cur.w - (right - left);
+      falling.push({ x: cutX, w: cutW, y: stack.length * H, vy: 0, label: "" });
+      msgEl.textContent = stack.length > 6 ? "Keep going" : "Line them up";
+    }
+
+    stack.push({ x: left, w: right - left, label: cur.label });
+    setScore(stack.length - 1);
+    speed = Math.min(speed * 1.05, W * 1.7);
+    spawn();
+  }
+
+  function update(dt) {
+    if (state === "play") {
+      cur.x += speed * cur.dir * dt;
+      const top = stack[stack.length - 1];
+      if (cur.x + cur.w > W + top.w * 0.2) cur.dir = -1;
+      if (cur.x < -top.w * 0.2) cur.dir = 1;
+    }
+    for (const f of falling) { f.vy += 1800 * dt; f.y -= f.vy * dt; }
+    falling = falling.filter(f => f.y > -400);
+    const target = Math.max(0, (stack.length + 1) * H - CH * 0.62);
+    camera += (target - camera) * Math.min(1, dt * 8);
+    flash = Math.max(0, flash - dt * 2.4);
+  }
+
+  // y measured up from the floor; convert to canvas coordinates
+  const toY = y => CH - y - H + camera - 18;
+
+  function block(b, y, fill, text) {
+    ctx.fillStyle = fill;
+    ctx.fillRect(b.x, toY(y), b.w, H - 2);
+    if (b.label && b.w > 58) {
+      ctx.fillStyle = text;
+      ctx.font = '500 11px "Inter Tight", system-ui, sans-serif';
+      ctx.textAlign = "center"; ctx.textBaseline = "middle";
+      ctx.fillText(b.label, b.x + b.w / 2, toY(y) + (H - 2) / 2 + 0.5);
+    }
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, W, CH);
+
+    // faint baseline grid, like ruled paper
+    ctx.strokeStyle = RULE; ctx.lineWidth = 1;
+    const off = (camera % H);
+    for (let y = CH - 18 + off; y > 0; y -= H) {
+      ctx.globalAlpha = 0.45;
+      ctx.beginPath(); ctx.moveTo(0, Math.round(y) + 0.5); ctx.lineTo(W, Math.round(y) + 0.5); ctx.stroke();
+    }
+    ctx.globalAlpha = 1;
+
+    stack.forEach((b, i) => {
+      const isTop = i === stack.length - 1 && i > 0;
+      const fill = i === 0 ? RULE : (isTop && flash > 0 ? RED : INK);
+      block(b, i * H, fill, PAPER);
+    });
+    for (const f of falling) block(f, f.y, SOFT, PAPER);
+    if (state !== "over") block(cur, stack.length * H, INK, PAPER);
+
+    if (state !== "play") {
+      ctx.fillStyle = "rgba(244,241,234,.86)";
+      ctx.fillRect(0, 0, W, CH);
+      ctx.fillStyle = INK; ctx.textAlign = "center"; ctx.textBaseline = "alphabetic";
+      ctx.font = 'italic 400 38px "Instrument Serif", serif';
+      const credits = (stack.length - 1) * CREDITS;
+      ctx.fillText(state === "idle" ? "Ready?" : credits + " credits", W / 2, CH / 2);
+      ctx.fillStyle = SOFT; ctx.font = '400 13px "Inter Tight", system-ui, sans-serif';
+      ctx.fillText(state === "idle" ? "Tap to start" : "Tap to try again", W / 2, CH / 2 + 28);
+    }
+  }
+
+  let last = 0;
+  function loop(t) {
+    const dt = last ? Math.min((t - last) / 1000, 0.05) : 0;
+    last = t;
+    update(dt); draw(); requestAnimationFrame(loop);
+  }
+
+  canvas.addEventListener("pointerdown", e => { e.preventDefault(); canvas.focus({ preventScroll: true }); drop(); });
+  canvas.addEventListener("keydown", e => {
+    if (e.code === "Space" || e.code === "Enter") { e.preventDefault(); drop(); }
+  });
+  let lastW = 0;
+  window.addEventListener("resize", () => {
+    const w = canvas.getBoundingClientRect().width;
+    if (Math.abs(w - lastW) > 1) { lastW = w; stack = null; }
+    resize();
+  });
+
+  (document.fonts ? document.fonts.ready : Promise.resolve()).then(() => { resize(); requestAnimationFrame(loop); });
+})();
+</script>
 </body>
 </html>
