@@ -49,8 +49,8 @@ The full version — projects, write-ups and a résumé — is in progress. For 
 There's no build step. Clone it and open the file, or serve the folder so the root-relative paths resolve:
 
 ```sh
-git clone https://github.com/prayush27/portfolio.git
-cd portfolio
+git clone https://github.com/prayush27/prayushdesai.com.git
+cd prayushdesai.com
 python3 -m http.server 8000
 ```
 
