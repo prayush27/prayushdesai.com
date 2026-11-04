@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Prayush Desai</title>
-<meta name="description" content="Prayush Desai studies computer science at UW–Madison and is building MadPlan, a class planner for UW students.">
+<meta name="description" content="Prayush Desai studies computer science at UW-Madison and is building MadPlan, a class planner for UW students.">
 <meta name="theme-color" content="#f4f1ea">
 <meta name="color-scheme" content="light">
 <link rel="canonical" href="https://prayushdesai.com/">
@@ -31,6 +31,7 @@
   body {
     background: var(--bg); color: var(--ink);
     font: 400 15px/1.65 "Inter", system-ui, sans-serif;
+    text-wrap: pretty;
     font-feature-settings: "cv11", "ss01";
     -webkit-font-smoothing: antialiased;
   }
@@ -45,8 +46,10 @@
   }
   a:hover, a:focus-visible { text-decoration-color: currentColor; outline: none; }
 
+  header { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; }
   h1 { font-size: 15px; font-weight: 500; letter-spacing: -.005em; }
-  .role { color: var(--soft); }
+  .role, .clock { color: var(--soft); }
+  .clock { font-size: 13px; font-variant-numeric: tabular-nums; white-space: nowrap; }
 
   section { margin-top: 48px; }
   h2 { font-size: 15px; font-weight: 400; color: var(--soft); margin-bottom: 14px; }
@@ -55,8 +58,12 @@
   .soft { color: var(--soft); }
 
   ul { list-style: none; display: grid; gap: 14px; }
+  li { display: grid; grid-template-columns: 1fr auto; column-gap: 16px; }
   li .t { font-weight: 500; }
-  li .d { display: block; color: var(--soft); }
+  li .tag { font-size: 13px; color: var(--soft); align-self: baseline; }
+  li .d { grid-column: 1 / -1; color: var(--soft); }
+  h2 .score { float: right; font-size: 13px; }
+  h2 .score b { font-weight: 500; color: var(--ink); font-variant-numeric: tabular-nums; }
 
   footer { margin-top: 72px; display: flex; justify-content: space-between; gap: 16px; font-size: 13px; color: var(--soft); }
 
@@ -67,16 +74,13 @@
   .rise:nth-child(6) { animation-delay: .30s; } .rise:nth-child(7) { animation-delay: .36s; }
   @keyframes in { to { opacity: 1; transform: none; } }
 
-  .game-head, .game-foot { display: flex; justify-content: space-between; gap: 12px; font-size: 13px; color: var(--soft); }
-  .game-head { margin-bottom: 10px; }
-  .game-head b { font-weight: 500; color: var(--ink); font-variant-numeric: tabular-nums; }
-  .game-foot { margin-top: 10px; }
+  .game-foot { display: flex; justify-content: space-between; gap: 12px; font-size: 13px; color: var(--soft); margin-top: 10px; }
   .game canvas {
-    display: block; width: 100%; aspect-ratio: 16 / 9; border: 1px solid var(--rule); border-radius: 6px;
+    display: block; width: 100%; aspect-ratio: 2 / 1; border: 1px solid var(--rule); border-radius: 8px;
     cursor: pointer; touch-action: none; -webkit-tap-highlight-color: transparent; user-select: none; -webkit-user-select: none;
   }
   .game canvas:focus-visible { outline: 1px solid var(--ink); outline-offset: 3px; }
-  @media (max-width: 520px) { .game canvas { aspect-ratio: 4 / 3; } }
+  @media (max-width: 520px) { .game canvas { aspect-ratio: 3 / 2; } }
 
   @media (prefers-reduced-motion: reduce) { .rise { animation: none; opacity: 1; transform: none; } }
 </style>
@@ -85,26 +89,27 @@
 
 <main>
   <header class="rise">
-    <h1>Prayush Desai</h1>
-    <div class="role">Computer science student</div>
+    <div>
+      <h1>Prayush Desai</h1>
+      <div class="role">Computer science student</div>
+    </div>
+    <span class="clock" id="clock">Madison, WI</span>
   </header>
 
   <div class="intro rise">
-    <p>I study computer science at UW–Madison and like building small, useful software, mostly in Python and Java.</p>
-    <p class="soft">This site is still coming together. More soon.</p>
+    <p>I’m a computer science student at UW–Madison, class of 2029. I like making small tools that take the busywork out of everyday things, mostly in Python and Java.</p>
+    <p>When I’m not coding, I’m probably playing badminton.</p>
   </div>
 
   <section class="rise">
     <h2>Now</h2>
     <ul>
-      <li><span class="t">MadPlan</span><span class="d">A class planner that reads your DARS and builds a semester schedule around it.</span></li>
-      <li><span class="t">UW–Madison</span><span class="d">B.S. Computer Science, class of 2029.</span></li>
+      <li><span class="t">MadPlan</span><span class="tag">In progress</span><span class="d">A class planner that reads your degree audit and builds a semester schedule around what you still need.</span></li>
     </ul>
   </section>
 
   <section class="rise game" aria-label="Paper plane, a small game">
-    <h2>Play</h2>
-    <div class="game-head"><span>Paper plane</span><span><b id="score">0</b> m · best <b id="best">0</b></span></div>
+    <h2>Paper plane <span class="score"><b id="score">0</b> m · best <b id="best">0</b></span></h2>
     <canvas id="sky" tabindex="0" aria-label="Game area. Hold space or press and hold to climb, let go to glide."></canvas>
     <div class="game-foot"><span>Hold to climb, let go to glide</span><span id="msg">Mind the birds</span></div>
   </section>
@@ -116,11 +121,18 @@
 
   <footer class="rise">
     <span>© 2026</span>
-    <span>Madison, WI</span>
+    <span>Still being built</span>
   </footer>
 </main>
 
 <script>
+(() => {
+  const el = document.getElementById("clock");
+  const fmt = new Intl.DateTimeFormat("en-US", { hour: "numeric", minute: "2-digit", timeZone: "America/Chicago" });
+  const tick = () => { el.textContent = "Madison, WI · " + fmt.format(new Date()); };
+  tick(); setInterval(tick, 20000);
+})();
+
 (() => {
   const canvas = document.getElementById("sky");
   const ctx = canvas.getContext("2d");
