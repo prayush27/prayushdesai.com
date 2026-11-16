@@ -26,7 +26,7 @@ The full version — projects, write-ups and a résumé — is in progress. For 
 
 - **Markup & styles:** plain HTML and CSS, nothing to build
 - **Game:** *Paper plane*, a tiny one-button flyer. Hold to climb, let go to glide, and steer around birds and red balloons. Drawn on a `<canvas>` in vanilla JavaScript.
-- **Type:** [Inter](https://rsms.me/inter/), one typeface for everything
+- **Type:** [Schibsted Grotesk](https://fonts.google.com/specimen/Schibsted+Grotesk), one typeface for everything
 - **Palette:** one warm paper tone, near-black ink, and UW red for hover states
 - **Hosting:** GitHub Pages
 - **Domain & DNS:** Cloudflare

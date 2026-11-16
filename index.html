@@ -17,72 +17,129 @@
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500&display=swap" rel="stylesheet">
+<link rel="preload" href="/assets/margin-hover.webp" as="image" type="image/webp">
 <style>
+  /* palette in OKLCH so equal lightness reads as equal */
   :root {
-    --bg: #f4f1ea;
-    --ink: #1a1917;
-    --soft: #77736b;
-    --rule: #dcd7cc;
-    --red: #c5050c;
+    --bg: oklch(95.9% 0.010 87);
+    --ink: oklch(21.4% 0.004 85);
+    --soft: oklch(51.5% 0.013 85);
+    --line: oklch(21.4% 0.004 85 / 0.12);
+    --line-strong: oklch(21.4% 0.004 85 / 0.28);
+    --wash: oklch(21.4% 0.004 85 / 0.04);
+    --red: oklch(51.9% 0.210 28);
+    --ease: cubic-bezier(.2, .7, 0, 1);
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html { -webkit-text-size-adjust: 100%; }
   body {
     background: var(--bg); color: var(--ink);
-    font: 400 15px/1.65 "Inter", system-ui, sans-serif;
+    font: 400 15px/1.65 "Schibsted Grotesk", system-ui, sans-serif;
     text-wrap: pretty;
-    font-feature-settings: "cv11", "ss01";
     -webkit-font-smoothing: antialiased;
   }
   ::selection { background: var(--ink); color: var(--bg); }
 
-  main { max-width: 600px; margin: 0 auto; padding: clamp(64px, 14vh, 140px) 20px 96px; }
+  main {
+    max-width: 600px; margin: 0 auto; min-height: 100dvh;
+    display: flex; flex-direction: column;
+    padding: clamp(64px, 14vh, 140px) 20px 40px;
+  }
 
   a {
     color: inherit; text-decoration: underline; text-underline-offset: 3px;
-    text-decoration-thickness: 1px; text-decoration-color: var(--rule);
-    transition: text-decoration-color .2s, color .2s;
+    text-decoration-thickness: 1px; text-decoration-color: var(--line-strong);
+    transition: text-decoration-color .2s;
   }
-  a:hover, a:focus-visible { text-decoration-color: currentColor; outline: none; }
+  a:hover { text-decoration-color: currentColor; }
+  :focus-visible { outline: 1.5px solid var(--ink); outline-offset: 3px; border-radius: 3px; }
+
+  /* external-link arrow: 1.5 stroke sits with 400-weight text */
+  .ext { white-space: nowrap; }
+  .ext svg {
+    width: .72em; height: .72em; margin-left: 2px; vertical-align: .02em;
+    stroke: var(--soft); fill: none; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round;
+    transition: transform .25s var(--ease), stroke .2s;
+  }
+  .ext:hover svg { transform: translate(1.5px, -1.5px); stroke: var(--ink); }
 
   header { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; }
-  h1 { font-size: 15px; font-weight: 500; letter-spacing: -.005em; }
+  h1 { font-size: 15px; font-weight: 500; }
   .role, .clock { color: var(--soft); }
-  .clock { font-size: 13px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .clock { font-size: 13px; white-space: nowrap; }
 
-  section { margin-top: 48px; }
-  h2 { font-size: 15px; font-weight: 400; color: var(--soft); margin-bottom: 14px; }
+  section { margin-top: 56px; }
+  h2 { font-size: 15px; font-weight: 400; color: var(--soft); margin-bottom: 16px; }
   .intro { margin-top: 32px; }
   .intro p + p { margin-top: 14px; }
-  .soft { color: var(--soft); }
 
-  ul { list-style: none; display: grid; gap: 14px; }
-  li { display: grid; grid-template-columns: 1fr auto; column-gap: 16px; }
-  li .t { font-weight: 500; }
-  li .tag { font-size: 13px; color: var(--soft); align-self: baseline; }
-  li .d { grid-column: 1 / -1; color: var(--soft); }
+  /* Margin: a card whose inner radius = outer radius - padding */
+  .card {
+    --r: 14px; --p: 6px;
+    display: block; text-decoration: none;
+    border: 1px solid var(--line); border-radius: var(--r); padding: var(--p);
+    transition: border-color .25s, background-color .25s;
+  }
+  .card:hover { border-color: var(--line-strong); background: var(--wash); }
+  .shot { border-radius: calc(var(--r) - var(--p)); overflow: hidden; }
+  .shot img {
+    display: block; width: 100%; height: auto; aspect-ratio: 1180 / 490;
+    /* soft fade where the crop cuts through the lecture text */
+    -webkit-mask: linear-gradient(90deg, transparent, #000 7% 93%, transparent), linear-gradient(transparent, #000 8% 88%, transparent);
+    -webkit-mask-composite: source-in;
+            mask: linear-gradient(90deg, transparent, #000 7% 93%, transparent) intersect, linear-gradient(transparent, #000 8% 88%, transparent);
+    mix-blend-mode: multiply; /* the screenshot's white melts into the page */
+    transition: transform .6s var(--ease);
+  }
+  .card:hover .shot img { transform: scale(1.015); }
+  .card-text { display: grid; grid-template-columns: 1fr auto; column-gap: 16px; padding: 12px 10px 8px; }
+  .card-text .t { font-weight: 500; }
+  .card-text .tag { font-size: 13px; color: var(--soft); align-self: baseline; }
+  .card-text .d { grid-column: 1 / -1; color: var(--soft); }
+  .card .ext svg { stroke: var(--soft); }
+  .card:hover .ext svg { transform: translate(1.5px, -1.5px); stroke: var(--ink); }
+
   h2 .score { float: right; font-size: 13px; }
   h2 .score b { font-weight: 500; color: var(--ink); font-variant-numeric: tabular-nums; }
 
-  footer { margin-top: 72px; display: flex; justify-content: space-between; gap: 16px; font-size: 13px; color: var(--soft); }
-
-  /* gentle stagger as the page loads */
-  .rise { opacity: 0; transform: translateY(6px); animation: in .7s cubic-bezier(.2,.7,0,1) forwards; }
-  .rise:nth-child(2) { animation-delay: .06s; } .rise:nth-child(3) { animation-delay: .12s; }
-  .rise:nth-child(4) { animation-delay: .18s; } .rise:nth-child(5) { animation-delay: .24s; }
-  .rise:nth-child(6) { animation-delay: .30s; } .rise:nth-child(7) { animation-delay: .36s; }
-  @keyframes in { to { opacity: 1; transform: none; } }
-
   .game-foot { display: flex; justify-content: space-between; gap: 12px; font-size: 13px; color: var(--soft); margin-top: 10px; }
   .game canvas {
-    display: block; width: 100%; aspect-ratio: 2 / 1; border: 1px solid var(--rule); border-radius: 8px;
+    display: block; width: 100%; aspect-ratio: 2 / 1; border: 1px solid var(--line); border-radius: 10px;
     cursor: pointer; touch-action: none; -webkit-tap-highlight-color: transparent; user-select: none; -webkit-user-select: none;
   }
-  .game canvas:focus-visible { outline: 1px solid var(--ink); outline-offset: 3px; }
   @media (max-width: 520px) { .game canvas { aspect-ratio: 3 / 2; } }
 
-  @media (prefers-reduced-motion: reduce) { .rise { animation: none; opacity: 1; transform: none; } }
+  /* copy-email button: outgoing icon blurs as it fades */
+  .copy {
+    display: inline-grid; place-items: center; vertical-align: -2px;
+    width: 22px; height: 22px; margin: 0 -2px 0 1px; border: 0; border-radius: 6px;
+    background: transparent; color: var(--soft); cursor: pointer;
+    transition: background-color .2s, color .2s;
+  }
+  .copy:hover { background: var(--wash); color: var(--ink); }
+  .copy svg {
+    grid-area: 1 / 1; width: 13px; height: 13px;
+    fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round;
+    transition: opacity .2s, filter .2s, transform .25s var(--ease);
+  }
+  .copy .done { opacity: 0; filter: blur(4px); transform: scale(.6); }
+  .copy.ok .idle { opacity: 0; filter: blur(4px); transform: scale(.6); }
+  .copy.ok .done { opacity: 1; filter: none; transform: none; color: var(--ink); }
+
+  footer { margin-top: auto; padding-top: 72px; display: flex; justify-content: space-between; gap: 16px; font-size: 13px; color: var(--soft); }
+
+  /* one quiet stagger on first paint, nothing on scroll */
+  .rise { opacity: 0; transform: translateY(4px); animation: in .6s var(--ease) forwards; }
+  .rise:nth-child(2) { animation-delay: .05s; } .rise:nth-child(3) { animation-delay: .1s; }
+  .rise:nth-child(4) { animation-delay: .15s; } .rise:nth-child(5) { animation-delay: .2s; }
+  .rise:nth-child(6) { animation-delay: .25s; }
+  @keyframes in { to { opacity: 1; transform: none; } }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+    .rise { opacity: 1; transform: none; }
+  }
 </style>
 </head>
 <body>
@@ -103,9 +160,14 @@
 
   <section class="rise">
     <h2>Now</h2>
-    <ul>
-      <li><span class="t"><a href="https://margin.prayushdesai.com" target="_blank" rel="noopener">Margin</a></span><span class="tag">In progress</span><span class="d">A free Chrome extension that builds your course glossary while you study. Save a term once and its definition shows up on every page and lecture PDF.</span></li>
-    </ul>
+    <a class="card" href="https://margin.prayushdesai.com" target="_blank" rel="noopener">
+      <div class="shot"><img src="/assets/margin-hover.webp" width="1180" height="490" alt="Margin showing the definition of heap in a card over lecture notes"></div>
+      <div class="card-text">
+        <span class="t ext">Margin<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M3.5 8.5l5-5M4.5 3.5h4v4"/></svg></span>
+        <span class="tag">In progress</span>
+        <span class="d">A free Chrome extension that builds your course glossary while you study. Save a term once and its definition shows up on every page and lecture PDF.</span>
+      </div>
+    </a>
   </section>
 
   <section class="rise game" aria-label="Paper plane, a small game">
@@ -116,7 +178,7 @@
 
   <section class="rise">
     <h2>Connect</h2>
-    <p>Reach me by <a href="mailto:pdesai25@wisc.edu">email</a>, or find me on <a href="https://github.com/prayush27" target="_blank" rel="noopener">GitHub</a> and <a href="https://linkedin.com/in/prayushdesai" target="_blank" rel="noopener">LinkedIn</a>.</p>
+    <p>Reach me by <a href="mailto:pdesai25@wisc.edu">email</a><button class="copy" id="copy" type="button" aria-label="Copy email address" title="Copy email address"><svg class="idle" viewBox="0 0 16 16" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="2"/><path d="M10.5 3.5v-.5a1.5 1.5 0 0 0-1.5-1.5H4A1.5 1.5 0 0 0 2.5 3v5A1.5 1.5 0 0 0 4 9.5h.5"/></svg><svg class="done" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7"/></svg></button>, or find me on <a class="ext" href="https://github.com/prayush27" target="_blank" rel="noopener">GitHub<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M3.5 8.5l5-5M4.5 3.5h4v4"/></svg></a> and <a class="ext" href="https://linkedin.com/in/prayushdesai" target="_blank" rel="noopener">LinkedIn<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M3.5 8.5l5-5M4.5 3.5h4v4"/></svg></a>.</p>
   </section>
 
   <footer class="rise">
@@ -134,13 +196,24 @@
 })();
 
 (() => {
+  const btn = document.getElementById("copy");
+  let t;
+  btn.addEventListener("click", async () => {
+    try { await navigator.clipboard.writeText("pdesai25@wisc.edu"); } catch (e) { return; }
+    btn.classList.add("ok"); btn.setAttribute("aria-label", "Copied");
+    clearTimeout(t);
+    t = setTimeout(() => { btn.classList.remove("ok"); btn.setAttribute("aria-label", "Copy email address"); }, 1600);
+  });
+})();
+
+(() => {
   const canvas = document.getElementById("sky");
   const ctx = canvas.getContext("2d");
   const scoreEl = document.getElementById("score");
   const bestEl = document.getElementById("best");
   const msgEl = document.getElementById("msg");
 
-  const INK = "#1a1917", SOFT = "#77736b", RULE = "#dcd7cc", RED = "#c5050c", PAPER = "#f4f1ea", CLOUD = "#ebe7de";
+  const INK = "#1a1917", SOFT = "#6e6a62", RULE = "#dcd7cc", RED = "#c5050c", PAPER = "#f4f1ea", CLOUD = "#ebe7de";
 
   let W = 0, H = 0, dpr = 1, u = 1, floor = 0;
   let state = "idle", plane, birds, balloons, clouds, hills, trail, speed, dist, nextBird, nextBalloon, holding, time, crashT;
@@ -337,9 +410,9 @@
     if (state === "idle" || (state === "over" && crashT > 0.6)) {
       ctx.fillStyle = "rgba(244,241,234,.8)"; ctx.fillRect(0, 0, W, H);
       ctx.textAlign = "center"; ctx.fillStyle = INK;
-      ctx.font = "500 " + 22 * u + 'px "Inter", system-ui, sans-serif';
+      ctx.font = "500 " + 22 * u + 'px "Schibsted Grotesk", system-ui, sans-serif';
       ctx.fillText(state === "idle" ? "Ready for takeoff?" : Math.floor(dist) + " m", W / 2, H / 2 - 6 * u);
-      ctx.fillStyle = SOFT; ctx.font = "400 " + Math.max(12, 13 * u) + 'px "Inter", system-ui, sans-serif';
+      ctx.fillStyle = SOFT; ctx.font = "400 " + Math.max(12, 13 * u) + 'px "Schibsted Grotesk", system-ui, sans-serif';
       ctx.fillText(state === "idle" ? "Press and hold to fly" : "Tap to fly again", W / 2, H / 2 + 22 * u);
     }
   }
