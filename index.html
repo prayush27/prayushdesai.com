@@ -18,7 +18,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500&display=swap" rel="stylesheet">
-<link rel="preload" href="/assets/margin-hover.webp" as="image" type="image/webp">
+<link rel="preload" href="/assets/margin-card.webp" as="image" type="image/webp">
 <style>
   /* palette in OKLCH so equal lightness reads as equal */
   :root {
@@ -85,11 +85,6 @@
   .shot { border-radius: calc(var(--r) - var(--p)); overflow: hidden; }
   .shot img {
     display: block; width: 100%; height: auto; aspect-ratio: 1180 / 490;
-    /* soft fade where the crop cuts through the lecture text */
-    -webkit-mask: linear-gradient(90deg, transparent, #000 7% 93%, transparent), linear-gradient(transparent, #000 8% 88%, transparent);
-    -webkit-mask-composite: source-in;
-            mask: linear-gradient(90deg, transparent, #000 7% 93%, transparent) intersect, linear-gradient(transparent, #000 8% 88%, transparent);
-    mix-blend-mode: multiply; /* the screenshot's white melts into the page */
     transition: transform .6s var(--ease);
   }
   .card:hover .shot img { transform: scale(1.015); }
@@ -161,7 +156,7 @@
   <section class="rise">
     <h2>Now</h2>
     <a class="card" href="https://margin.prayushdesai.com" target="_blank" rel="noopener">
-      <div class="shot"><img src="/assets/margin-hover.webp" width="1180" height="490" alt="Margin showing the definition of heap in a card over lecture notes"></div>
+      <div class="shot"><img src="/assets/margin-card.webp" width="1180" height="490" alt="Lecture notes with heap and priority queue underlined, and their definitions written in the page margin"></div>
       <div class="card-text">
         <span class="t ext">Margin<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M3.5 8.5l5-5M4.5 3.5h4v4"/></svg></span>
         <span class="tag">In progress</span>
